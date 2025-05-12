@@ -105,6 +105,50 @@
 * Тести для Observer: перевірка сповіщення бібліотекаря.
 
 
+## Тести для патернів проєктування
+
+### **Factory Method Tests** (тести для фабрики `UserFactory` та `BookFactory`)
+
+* **`test_user_factory_creates_user_correctly`**
+  Перевіряє, що фабрика `UserFactory` створює користувача з правильними ім’ям, поштою та хешованим паролем.
+
+* **`test_book_factory_creates_book_correctly`**
+  Переконується, що фабрика `BookFactory` створює книгу з вказаними назвою, автором та роком видання.
+
+* **`test_user_factory_unique_ids`**
+  Тестує, що при створенні кількох користувачів фабрика генерує **унікальні** ідентифікатори (ID).
+
+* **`test_book_factory_unique_ids`**
+  Аналогічно перевіряє, що при створенні кількох книг їхні ID також є унікальними.
+
+![](tests_result/test_factory.png)
+
+### **Observer Pattern Tests** (тести для `OrderNotifier` та `Librarian`)
+
+* **`test_observer_notifies_librarian`**
+  Перевіряє, що при виклику `notify()` спостерігач (лібріаріан) отримує повідомлення.
+
+* **`test_observer_multiple_librarians`**
+  Переконується, що кілька бібліотекарів отримують сповіщення одночасно, якщо зареєстровані як спостерігачі.
+
+* **`test_observer_removes_observer_correctly`**
+  Тестує, що після видалення спостерігача з `OrderNotifier`, він більше не отримує сповіщення.
+
+* **`test_observer_prevents_duplicate_observers`**
+  Перевіряє, що `OrderNotifier` не додає одного і того ж спостерігача двічі, тим самим запобігає дублюванню сповіщень.
+
+![](tests_result/test_observer.png)
+
+### **Singleton Pattern Tests** (тести для `MongoConnection`)
+
+* **`test_singleton_returns_same_instance`**
+  Перевіряє, що кілька викликів `MongoConnection()` повертають **один і той самий об’єкт** (перевірка Singleton-поведінки).
+
+* **`test_singleton_connection_string`**
+  Тестує, що у об'єкта `MongoConnection` зберігається правильний рядок підключення до бази даних MongoDB.
+
+![](tests_result/test_singleton.png)
+
 ## Технічні вимоги
 
 * **Мова програмування:** Python
