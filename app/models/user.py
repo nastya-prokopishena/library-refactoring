@@ -13,13 +13,13 @@ class User:
         return hashlib.sha256(password.encode('utf-8')).hexdigest()
 
     def get_user_id(self) -> str:
-        pass
+        return self._user_id
 
     def get_name(self) -> str:
-        pass
+        return self._name
 
     def get_email(self) -> str:
-        pass
+        return self._email
 
     def verify_password(self, input_password: str) -> bool:
-        pass
+        return self._password_hash == self._hash_password(input_password)
