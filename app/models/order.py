@@ -9,13 +9,13 @@ class Order:
         self._created_at = datetime.now()
 
     def get_order_id(self) -> str:
-        return self._order_id
+        pass
 
     def get_user(self) -> 'User':
-        return self._user
+        pass
 
     def get_book(self) -> 'Book':
-        return self._book
+        pass
 
     def get_created_at(self) -> datetime:
-        return self._created_at
+        pass

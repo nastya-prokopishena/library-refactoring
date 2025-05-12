@@ -5,10 +5,10 @@ class Book:
         self._year = year
 
     def get_title(self) -> str:
-        return self._title
+        pass
 
     def get_author(self) -> str:
-        return self._author
+        pass
 
     def get_year(self) -> int:
-        return self._year
+        pass
