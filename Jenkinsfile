@@ -1,9 +1,6 @@
 pipeline {
     agent {
-        docker {
-            image 'python:3.11'
-            args '-v /tmp:/tmp'
-        }
+        label 'master'
     }
 
     environment {
@@ -11,26 +8,29 @@ pipeline {
     }
 
     stages {
-        stage('Install dependencies') {
+        stage('Checkout') {
             steps {
-                sh 'pip install -r requirements.txt'
+                checkout scm
+            }
+        }
+
+        stage('Setup Python') {
+            steps {
+                bat '''
+                    python --version
+                    pip install -r requirements.txt
+                '''
             }
         }
 
         stage('Run tests') {
             steps {
-                sh 'pytest tests/ --junitxml=test-results/results.xml'
+                bat 'pytest tests/ --junitxml=test-results/results.xml'
             }
             post {
                 always {
                     junit 'test-results/results.xml'
                 }
-            }
-        }
-
-        stage('Run application') {
-            steps {
-                sh 'python run.py &'
             }
         }
     }
