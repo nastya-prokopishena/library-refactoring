@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-        label 'main'
-    }
+    agent any
 
     environment {
         MONGO_URI = 'mongodb://mongo:27017'
@@ -14,18 +12,15 @@ pipeline {
             }
         }
 
-        stage('Setup Python') {
+        stage('Install dependencies') {
             steps {
-                bat '''
-                    python --version
-                    pip install -r requirements.txt
-                '''
+                sh 'pip install -r requirements.txt'
             }
         }
 
         stage('Run tests') {
             steps {
-                bat 'pytest tests/ --junitxml=test-results/results.xml'
+                sh 'pytest tests/ --junitxml=test-results/results.xml'
             }
             post {
                 always {
