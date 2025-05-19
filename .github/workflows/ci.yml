@@ -13,17 +13,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Set up Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # Install docker-compose
+      - name: Install docker-compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
+
+      # Log in to Docker Hub (optional, for pushing images)
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+      # Build Docker image
       - name: Build Docker image
         run: docker-compose -f docker-compose.yml build app
 
+      # Start services and run tests
       - name: Run tests with Docker Compose
         run: |
           docker-compose -f docker-compose.yml up -d mongo
           docker-compose -f docker-compose.yml run --rm app pytest tests/
           docker-compose -f docker-compose.yml down
+
+      # Tag and push Docker image (optional, only on main branch push)
+      - name: Tag and push Docker image
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          docker tag library-app:latest ${{ secrets.DOCKERHUB_USERNAME }}/library-app:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/library-app:latest
