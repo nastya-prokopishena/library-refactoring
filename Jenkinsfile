@@ -1,32 +1,43 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'python:3.11'
+            args '-v /tmp:/tmp'
+        }
+    }
+
+    environment {
+        MONGO_URI = 'mongodb://mongo:27017'
+    }
 
     stages {
-        stage('Checkout') {
-            steps {
-                echo 'Клонування репозиторію...'
-                checkout scm
-            }
-        }
-
         stage('Install dependencies') {
             steps {
-                echo 'Встановлення залежностей...'
-                sh 'python3 -m venv venv'
-                sh '. venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt'
+                sh 'pip install -r requirements.txt'
             }
         }
 
         stage('Run tests') {
             steps {
-                echo 'Запуск тестів...'
-                sh '. venv/bin/activate && pytest tests --junitxml=tests_result/results.xml'
+                sh 'pytest tests/ --junitxml=test-results/results.xml'
             }
             post {
                 always {
-                    junit 'tests_result/results.xml'
+                    junit 'test-results/results.xml'
                 }
             }
+        }
+
+        stage('Run application') {
+            steps {
+                sh 'python run.py &'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline completed'
         }
     }
 }
